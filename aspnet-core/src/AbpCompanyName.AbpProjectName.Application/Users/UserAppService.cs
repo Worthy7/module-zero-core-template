@@ -96,6 +96,25 @@ namespace AbpCompanyName.AbpProjectName.Users
         public override async Task DeleteAsync(EntityDto<long> input)
         {
             var user = await _userManager.GetUserByIdAsync(input.Id);
+
+            user.Name = "abcdefg"; // this updates the name in the repo
+
+            //await _userManager.DeleteAsync(user); // this will work fine
+            await Repository.DeleteAsync(user); // this doesn't do anything until the UoW ends or a savechanges is called
+
+            //CurrentUnitOfWork.SaveChanges(); // if this is called, then the repository is updated correctly and the user (IsDeleted)
+
+            var john = Repository.GetAll().First(s => s.Id == input.Id);
+
+            if (john.Name == "abcdefg") 
+            if (notDeletedUsers.Any(u => u.Id == input.Id))
+                throw new System.Exception("User is not deleted but should be");
+        }
+
+        public async Task UpdateAndDelete(EntityDto<long> input)
+        {
+            var user = await _userManager.GetUserByIdAsync(input.Id);
+            user.Name = "abcdefg"; // this updates the name in the repo
             await _userManager.DeleteAsync(user);
         }
 

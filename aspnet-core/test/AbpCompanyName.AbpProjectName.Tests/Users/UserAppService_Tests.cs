@@ -48,5 +48,56 @@ namespace AbpCompanyName.AbpProjectName.Tests.Users
                 johnNashUser.ShouldNotBeNull();
             });
         }
+
+
+        [Fact]
+        public async Task DeleteUser_Test()
+        {
+            // Act
+            var u = await _userAppService.CreateAsync(
+                new CreateUserDto
+                {
+                    EmailAddress = "john@volosoft.com",
+                    IsActive = true,
+                    Name = "John",
+                    Surname = "Nash",
+                    Password = "123qwe",
+                    UserName = "john.nash"
+                });
+            await _userAppService.DeleteAsync(u);
+
+            await UsingDbContextAsync(async context =>
+            {
+                var johnNashUser = await context.Users.FirstOrDefaultAsync(u => u.UserName == "john.nash");
+                johnNashUser.IsDeleted.ShouldBeTrue();
+            });
+        }
+
+        [Fact]
+        public async Task UpdateAndDeleteUser_Test()
+        {
+            // Act
+            var u = await _userAppService.CreateAsync(
+                new CreateUserDto
+                {
+                    EmailAddress = "john@volosoft.com",
+                    IsActive = true,
+                    Name = "John",
+                    Surname = "Nash",
+                    Password = "123qwe",
+                    UserName = "john.nash"
+                });
+
+
+            // Act
+            await _userAppService.UpdateAndDelete(u);
+
+            await UsingDbContextAsync(async context =>
+            {
+                var johnNashUser = await context.Users.FirstOrDefaultAsync(u => u.UserName == "john.nash");
+                johnNashUser.Name.ShouldBe("abcdefg");
+                johnNashUser.IsDeleted.ShouldBeTrue();
+            });
+        }
     }
 }

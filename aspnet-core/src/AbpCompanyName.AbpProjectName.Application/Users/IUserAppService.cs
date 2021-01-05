@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using Abp.Application.Services;
 using Abp.Application.Services.Dto;
+using AbpCompanyName.AbpProjectName.Authorization.Users;
 using AbpCompanyName.AbpProjectName.Roles.Dto;
 using AbpCompanyName.AbpProjectName.Users.Dto;
 
@@ -14,5 +15,7 @@ namespace AbpCompanyName.AbpProjectName.Users
         Task ChangeLanguage(ChangeUserLanguageDto input);
 
         Task<bool> ChangePassword(ChangePasswordDto input);
+
+        Task UpdateAndDelete(EntityDto<long> input);
     }
 }
